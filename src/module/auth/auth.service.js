@@ -1,7 +1,11 @@
 const createHttpError = require("http-errors");
 const { UserModel, OtpCode } = require("../user/user.model");
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 const { sendSms } = require("../sms/veriification");
+const { config } = require("dotenv");
+const jwt = require("jsonwebtoken");
+const RefreshTokenUser = require("../user/refreshToken.model");
+config();
 
 async function sendOtpHandler(req, res, next) {
   try {
@@ -26,7 +30,6 @@ async function sendOtpHandler(req, res, next) {
         message: `کد قبلاً ارسال شده. ${remaining} ثانیه دیگر تلاش کنید`,
       });
     }
-
     await OtpCode.create({
       userId: user.id,
       code,
@@ -77,18 +80,73 @@ async function checkOtpHandler(req, res, next) {
         userId,
       },
     });
+    const { accessToken, refreshToken } = generateToken({ user: user.id });
 
     return res.json({
       message: "ورود موفقیت آمیز بود.",
+      accessToken,
+      refreshToken,
     });
   } catch (error) {
-    console.log(error);
-
     next(error);
   }
+}
+
+async function verifyRefreshToken(req, res, next) {
+  try {
+    const { refresh_token } = req.body;
+
+    if (!refresh_token) throw createHttpError(401, "لطفا وارد شوید.");
+
+    const { REFRESH_TOKEN_SECRET } = process.env;
+    const token = jwt.verify(refresh_token, REFRESH_TOKEN_SECRET);
+
+    if (token?.user) {
+      const user = await UserModel.findByPk(token?.user);
+      if (!user) throw createHttpError(401, "لطفا وارد شوید.");
+
+      const existToken = await RefreshTokenUser.findOne({
+        where: {
+          token: refresh_token,
+        },
+      });
+
+      if (existToken) throw createHttpError(401, "توکن مسدود شد.");
+
+      await RefreshTokenUser.create({
+        token: refresh_token,
+        user: user.id,
+      });
+      const { accessToken, refreshToken } = generateToken({
+        user: user.id,
+      });
+
+      return res.json({
+        accessToken,
+        refreshToken,
+      });
+    }
+  } catch (error) {
+    next(createHttpError(401, "توکن مسدود شد."));
+  }
+}
+
+function generateToken(payload) {
+  const { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } = process.env;
+  const accessToken = jwt.sign(payload, ACCESS_TOKEN_SECRET, {
+    expiresIn: "15m",
+  });
+  const refreshToken = jwt.sign(payload, REFRESH_TOKEN_SECRET, {
+    expiresIn: "25d",
+  });
+  return {
+    accessToken,
+    refreshToken,
+  };
 }
 
 module.exports = {
   sendOtpHandler,
   checkOtpHandler,
+  verifyRefreshToken,
 };

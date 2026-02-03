@@ -4,6 +4,7 @@ const {
   ProductColor,
   ProductSize,
 } = require("../module/product/product.model");
+const RefreshTokenUser = require("../module/user/refreshToken.model");
 
 const { UserModel, OtpCode } = require("../module/user/user.model");
 const { sequelize } = require("./sequelize");
@@ -46,6 +47,7 @@ async function initDatabase() {
     foreignKey: "userId",
     targetKey: "id",
   });
+  RefreshTokenUser.sync();
   // await sequelize.sync({ alter: true });
 }
 

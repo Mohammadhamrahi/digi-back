@@ -22,6 +22,19 @@
  * @swagger
  * components:
  *   schemas:
+ *     RefreshToken:
+ *       type: object
+ *       required:
+ *          - refresh_token
+ *       properties:
+ *         refresh_token:
+ *           type: string
+ */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
  *     CheckOtpCode:
  *       type: object
  *       required:
@@ -66,4 +79,21 @@
  *     responses:
  *       200:
  *         description: create product
+ */
+
+/**
+ * @swagger
+ * /auth/refresh_token:
+ *   post:
+ *     summary: Refresh token set
+ *     tags:
+ *       - otpCode
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *            $ref: '#/components/schemas/RefreshToken'
+ *     responses:
+ *       200:
+ *         description: refresh token
  */
