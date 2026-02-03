@@ -1,0 +1,25 @@
+{
+  "name": "digikala",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@sequelize/mariadb": "^7.0.0-alpha.47",
+    "axios": "^1.13.4",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "express-validation": "^4.1.1",
+    "http-errors": "^2.0.1",
+    "sequelize": "^6.37.7",
+    "swagger": "^0.7.5",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
+  }
+}
