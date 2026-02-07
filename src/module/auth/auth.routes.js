@@ -4,6 +4,7 @@ const {
   checkOtpHandler,
   verifyRefreshToken,
 } = require("./auth.service");
+const { AuthGurd } = require("./auth.gurd");
 
 const router = Router();
 
