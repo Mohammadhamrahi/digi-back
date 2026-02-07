@@ -4,6 +4,9 @@ const { Op, where } = require("sequelize");
 const { sendSms } = require("../sms/veriification");
 const { config } = require("dotenv");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
+const bcrypt = require("bcrypt");
+
 const RefreshTokenUser = require("../user/refreshToken.model");
 config();
 
@@ -80,7 +83,22 @@ async function checkOtpHandler(req, res, next) {
         userId,
       },
     });
-    const { accessToken, refreshToken } = generateToken({ user: user.id });
+    const deviceId = crypto.randomUUID();
+
+    const { accessToken, refreshToken } = generateToken({
+      user: user.id,
+      deviceId,
+    });
+
+    const hashedToken = await bcrypt.hash(refreshToken, 10);
+
+    await RefreshTokenUser.create({
+      user: user.id,
+      deviceId,
+      token: hashedToken,
+      userAgent: req.headers["user-agent"] || "Unknown",
+      ip: req.ip || "Unknown",
+    });
 
     return res.json({
       message: "ورود موفقیت آمیز بود.",
@@ -101,43 +119,54 @@ async function verifyRefreshToken(req, res, next) {
     const { REFRESH_TOKEN_SECRET } = process.env;
     const token = jwt.verify(refresh_token, REFRESH_TOKEN_SECRET);
 
-    if (token?.user) {
-      const user = await UserModel.findByPk(token?.user);
-      if (!user) throw createHttpError(401, "لطفا وارد شوید.");
+    if (!token?.user || !token?.deviceId)
+      throw createHttpError(401, "توکن نامعتبر است.");
 
-      const existToken = await RefreshTokenUser.findOne({
-        where: {
-          token: refresh_token,
-        },
-      });
+    const user = await UserModel.findByPk(token?.user);
+    if (!user) throw createHttpError(401, "لطفا وارد شوید.");
 
-      if (existToken) throw createHttpError(401, "توکن مسدود شد.");
-
-      await RefreshTokenUser.create({
-        token: refresh_token,
+    const existToken = await RefreshTokenUser.findOne({
+      where: {
+        deviceId: token.deviceId,
         user: user.id,
-      });
-      const { accessToken, refreshToken } = generateToken({
-        user: user.id,
-      });
+      },
+    });
+    if (!existToken) throw createHttpError(401, "نشست منقضی شده است.");
 
-      return res.json({
-        accessToken,
-        refreshToken,
-      });
-    }
+    const isValid = await bcrypt.compare(refresh_token, existToken.token);
+
+    if (!isValid) throw createHttpError(401, "توکن نامعتبر است.");
+
+    const { accessToken, refreshToken } = generateToken({
+      user: user.id,
+      deviceId: token.deviceId,
+    });
+
+    const hashedToken = await bcrypt.hash(refreshToken, 10);
+
+    await existToken.update({
+      token: hashedToken,
+    });
+
+    return res.json({
+      accessToken,
+      refreshToken,
+    });
   } catch (error) {
+    console.log("error", error);
+
     next(createHttpError(401, "توکن مسدود شد."));
   }
 }
 
 function generateToken(payload) {
   const { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } = process.env;
+
   const accessToken = jwt.sign(payload, ACCESS_TOKEN_SECRET, {
-    expiresIn: "15m",
+    expiresIn: "60m",
   });
   const refreshToken = jwt.sign(payload, REFRESH_TOKEN_SECRET, {
-    expiresIn: "25d",
+    expiresIn: "20m",
   });
   return {
     accessToken,

@@ -9,6 +9,11 @@ const RefreshTokenUser = sequelize.define(
     user: { type: DataTypes.INTEGER, allowNull: true },
     userAgent: DataTypes.TEXT,
     ip: DataTypes.STRING,
+    deviceId: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV1,
+      allowNull: false,
+    },
   },
   {
     modelName: "refreshToken",
