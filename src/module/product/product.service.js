@@ -92,6 +92,8 @@ async function createProductHandler(req, res, next) {
       message: "product created",
     });
   } catch (error) {
+    console.log(error);
+
     next(error);
   }
 }

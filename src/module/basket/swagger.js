@@ -60,3 +60,16 @@
  *       200:
  *         description: remove to basket
  */
+
+/**
+ * @swagger
+ * /basket/get-basket:
+ *   get:
+ *     tags:
+ *       - Basket
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: get all basket
+ */
