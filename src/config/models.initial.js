@@ -1,3 +1,5 @@
+const { BasketModel } = require("../module/basket/basket.model");
+const { DiscountModel } = require("../module/discount/discount.model");
 const {
   Product,
   ProductDetail,
@@ -47,7 +49,52 @@ async function initDatabase() {
     foreignKey: "userId",
     targetKey: "id",
   });
+
+  Product.hasMany(BasketModel, {
+    foreignKey: "productId",
+    as: "basket",
+    sourceKey: "id",
+  });
+
+  ProductColor.hasMany(BasketModel, {
+    foreignKey: "colorId",
+    as: "basket",
+    sourceKey: "id",
+  });
+  ProductSize.hasMany(BasketModel, {
+    foreignKey: "sizeId",
+    as: "basket",
+    sourceKey: "id",
+  });
+  UserModel.hasMany(BasketModel, {
+    foreignKey: "userId",
+    as: "basket",
+    sourceKey: "id",
+  });
+
+  BasketModel.belongsTo(Product, {
+    foreignKey: "productId",
+    targetKey: "id",
+    as: "product",
+  });
+  BasketModel.belongsTo(ProductColor, {
+    foreignKey: "colorId",
+    targetKey: "id",
+    as: "color",
+  });
+  BasketModel.belongsTo(ProductSize, {
+    foreignKey: "sizeId",
+    targetKey: "id",
+    as: "size",
+  });
+  BasketModel.belongsTo(UserModel, {
+    foreignKey: "userId",
+    targetKey: "id",
+    as: "user",
+  });
+
   RefreshTokenUser.sync();
+  DiscountModel.sync();
   // await sequelize.sync({ alter: true });
 }
 

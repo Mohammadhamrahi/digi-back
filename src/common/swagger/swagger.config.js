@@ -10,6 +10,15 @@ function SwaggerConfig(app) {
         description: "digikala nodejs",
         version: "1.0.0",
       },
+      components: {
+        securitySchemes: {
+          BearerAuth: {
+            type: "http",
+            scheme: "bearer",
+            bearerFormat: "JWT",
+          },
+        },
+      },
     },
     apis: [process.cwd() + "/src/module/**/*swagger.js"],
   });

@@ -1,11 +1,13 @@
 const { Router } = require("express");
 const { ProductRoutes } = require("../module/product/product.routes");
 const { authRouter } = require("../module/auth/auth.routes");
+const { BasketRouter } = require("../module/basket/basket.routes");
 
 const mainRouter = Router();
 
 mainRouter.use("/product", ProductRoutes);
 mainRouter.use("/auth", authRouter);
+mainRouter.use("/basket", BasketRouter);
 
 module.exports = {
   mainRouter,
