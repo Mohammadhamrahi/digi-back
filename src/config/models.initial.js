@@ -1,5 +1,7 @@
 const { BasketModel } = require("../module/basket/basket.model");
 const { DiscountModel } = require("../module/discount/discount.model");
+const { OrderModel, OrderItems } = require("../module/odrer/order.model");
+const { PaymentModel } = require("../module/payment/payment.model");
 const {
   Product,
   ProductDetail,
@@ -93,9 +95,33 @@ async function initDatabase() {
     as: "user",
   });
 
-  RefreshTokenUser.sync();
-  DiscountModel.sync();
-  // await sequelize.sync({ alter: true });
+  OrderModel.hasMany(OrderItems, {
+    foreignKey: "orderId",
+    sourceKey: "id",
+    as: "items",
+  });
+  UserModel.hasMany(OrderModel, {
+    foreignKey: "userId",
+    sourceKey: "id",
+    as: "orders",
+  });
+  OrderItems.belongsTo(OrderModel, { foreignKey: "orderId", targetKey: "id" });
+
+  OrderModel.hasOne(PaymentModel, {
+    foreignKey: "orderId",
+    sourceKey: "id",
+    as: "payment",
+  });
+  PaymentModel.hasOne(OrderModel, {
+    foreignKey: "paymentId",
+    sourceKey: "id",
+    as: "order",
+  });
+
+  // RefreshTokenUser.sync();
+  // DiscountModel.sync();
+
+  await sequelize.sync({ alter: true });
 }
 
 module.exports = {

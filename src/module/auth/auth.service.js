@@ -39,7 +39,7 @@ async function sendOtpHandler(req, res, next) {
       expires_in: new Date(Date.now() + 1000 * 60 * 2),
     });
 
-    await sendSms(mobile, code);
+    // await sendSms(mobile, code);
 
     return res.json({
       message: "کد تایید با موفقیت ارسال شد.",

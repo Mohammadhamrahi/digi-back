@@ -33,6 +33,51 @@
  *                  - single
  *                  - sizing
  *                  - colors
+ *          detail:
+ *            type: array
+ *            items:
+ *              type: object
+ *              properties:
+ *                key:
+ *                  type: string
+ *                value:
+ *                  type: string
+ *          colors:
+ *            type: array
+ *            items:
+ *              type: object
+ *              properties:
+ *                colorName:
+ *                  type: string
+ *                colorCode:
+ *                  type: string
+ *                productId:
+ *                  type: number
+ *                count:
+ *                  type: number
+ *                discount:
+ *                  type: string
+ *                activeDiscount:
+ *                  type: boolean
+ *                price:
+ *                  type: string
+ *          sizes:
+ *            type: array
+ *            items:
+ *              type: object
+ *              properties:
+ *                size:
+ *                  type: string
+ *                productId:
+ *                  type: number
+ *                count:
+ *                  type: number
+ *                discount:
+ *                  type: string
+ *                activeDiscount:
+ *                  type: boolean
+ *                price:
+ *                  type: string
  */
 
 /**
