@@ -4,6 +4,7 @@ const {
   GetBasketUserId,
 } = require("../basket/basket.service");
 const { OrderModel, OrderItems } = require("../odrer/order.model");
+const { ZarinpalRequest } = require("../zarinpal/zarinpal.service");
 const { PaymentModel } = require("./payment.model");
 
 async function paymentBasketHandler(req, res, next) {
@@ -17,6 +18,7 @@ async function paymentBasketHandler(req, res, next) {
       amount: finalAmount,
       status: false,
     });
+
     const order = await OrderModel.create({
       userId,
       paymentId: payment.id,
@@ -26,9 +28,12 @@ async function paymentBasketHandler(req, res, next) {
       status: OrderStatus.Pending,
       address: "tehran - tehran - parsa - 14",
     });
+
     payment.orderId = order.id;
     await payment.save();
+
     let orderList = [];
+
     for (const item of basket) {
       let items = [];
       if (item?.sizes?.length > 0) {
@@ -61,9 +66,11 @@ async function paymentBasketHandler(req, res, next) {
       orderList.push(...items);
     }
     await OrderItems.bulkCreate(orderList);
-    return res.json({
-      payUrl: "https://examplet.com",
-    });
+
+    const results = await ZarinpalRequest(payment?.amount, req?.user);
+    payment.authrity = results?.authority;
+    await payment.save();
+    return res.json(results);
   } catch (error) {
     next(error);
   }

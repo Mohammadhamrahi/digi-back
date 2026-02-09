@@ -163,10 +163,10 @@ function generateToken(payload) {
   const { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } = process.env;
 
   const accessToken = jwt.sign(payload, ACCESS_TOKEN_SECRET, {
-    expiresIn: "60m",
+    expiresIn: "20m",
   });
   const refreshToken = jwt.sign(payload, REFRESH_TOKEN_SECRET, {
-    expiresIn: "20m",
+    expiresIn: "7d",
   });
   return {
     accessToken,

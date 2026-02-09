@@ -9,7 +9,7 @@ const mainRouter = Router();
 mainRouter.use("/product", ProductRoutes);
 mainRouter.use("/auth", authRouter);
 mainRouter.use("/basket", BasketRouter);
-mainRouter.use("/payment", PaymentRouter);
+mainRouter.use("/", PaymentRouter);
 
 module.exports = {
   mainRouter,

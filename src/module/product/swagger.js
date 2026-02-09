@@ -33,7 +33,7 @@
  *                  - single
  *                  - sizing
  *                  - colors
- *          detail:
+ *          details:
  *            type: array
  *            items:
  *              type: object
@@ -51,8 +51,6 @@
  *                  type: string
  *                colorCode:
  *                  type: string
- *                productId:
- *                  type: number
  *                count:
  *                  type: number
  *                discount:
@@ -68,8 +66,6 @@
  *              properties:
  *                size:
  *                  type: string
- *                productId:
- *                  type: number
  *                count:
  *                  type: number
  *                discount:
