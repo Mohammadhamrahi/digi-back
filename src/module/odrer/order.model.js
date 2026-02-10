@@ -18,7 +18,7 @@ const OrderModel = sequelize.define(
     discount_amount: { type: DataTypes.DECIMAL },
     reason: { type: DataTypes.STRING, allowNull: true },
   },
-  { timestamps: false, createdAt: "created_at", modelName: "order" }
+  { timestamps: true, modelName: "order", updatedAt: false }
 );
 
 const OrderItems = sequelize.define(
@@ -31,6 +31,6 @@ const OrderItems = sequelize.define(
     sizeId: { type: DataTypes.INTEGER, allowNull: true },
     count: { type: DataTypes.INTEGER },
   },
-  { timestamps: false, createdAt: "created_at", modelName: "order" }
+  { timestamps: true, updatedAt: false, modelName: "orderItems" }
 );
 module.exports = { OrderModel, OrderItems };

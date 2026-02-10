@@ -125,6 +125,22 @@ async function initDatabase() {
     onDelete: "CASCADE",
   });
 
+  OrderItems.belongsTo(Product, {
+    foreignKey: "productId",
+    targetKey: "id",
+    as: "product",
+  });
+  OrderItems.belongsTo(ProductColor, {
+    foreignKey: "colorId",
+    targetKey: "id",
+    as: "color",
+  });
+  OrderItems.belongsTo(ProductSize, {
+    foreignKey: "sizeId",
+    targetKey: "id",
+    as: "size",
+  });
+
   // RefreshTokenUser.sync();
   // DiscountModel.sync();
 
