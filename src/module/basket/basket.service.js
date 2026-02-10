@@ -132,6 +132,7 @@ async function GetBasketUserId(userId) {
       },
     ],
   });
+  if (!basket?.length > 0) throw createHttpError(400, "basket empty");
 
   let totalAmount = 0;
   let totalDiscount = 0;

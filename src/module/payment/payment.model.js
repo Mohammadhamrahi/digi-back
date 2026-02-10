@@ -10,6 +10,7 @@ const PaymentModel = sequelize.define(
     refId: { type: DataTypes.STRING, allowNull: true },
     authrity: { type: DataTypes.STRING, allowNull: true },
     orderId: { type: DataTypes.INTEGER, allowNull: true },
+    userId: { type: DataTypes.INTEGER, allowNull: true },
   },
   {
     timestamps: false,

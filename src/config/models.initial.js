@@ -111,17 +111,24 @@ async function initDatabase() {
     foreignKey: "orderId",
     sourceKey: "id",
     as: "payment",
+    onDelete: "CASCADE",
+  });
+  UserModel.hasMany(PaymentModel, {
+    foreignKey: "userId",
+    sourceKey: "id",
+    as: "payment",
   });
   PaymentModel.hasOne(OrderModel, {
     foreignKey: "paymentId",
     sourceKey: "id",
     as: "order",
+    onDelete: "CASCADE",
   });
 
   // RefreshTokenUser.sync();
   // DiscountModel.sync();
 
-  await sequelize.sync({ alter: true });
+  // await sequelize.sync({ alter: true });
 }
 
 module.exports = {
