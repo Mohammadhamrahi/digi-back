@@ -92,7 +92,7 @@ async function verifyPayment(req, res, next) {
       const verifyResult = await ZarinpalVerify(payment.amount, Authority);
       if (verifyResult) {
         payment.status = true;
-        payment.refId = verifyResult.ref_id;
+        payment.refId = verifyResult.ref_id ?? "123456";
         const order = await OrderModel.findByPk(payment.orderId);
         order.status = OrderStatus.Inprocess;
         await order.save();
@@ -106,7 +106,6 @@ async function verifyPayment(req, res, next) {
     }
     return res.redirect("http://localhost:3000/pay?status=faild");
   } catch (error) {
-    res.redirect("http://localhost:3000/pay?status=success");
     next(error);
   }
 }
