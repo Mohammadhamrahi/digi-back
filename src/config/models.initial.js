@@ -8,6 +8,11 @@ const {
   ProductColor,
   ProductSize,
 } = require("../module/product/product.model");
+const {
+  Role,
+  RolePermission,
+  Permission,
+} = require("../module/RBAC/rbac.model");
 const RefreshTokenUser = require("../module/user/refreshToken.model");
 
 const { UserModel, OtpCode } = require("../module/user/user.model");
@@ -140,9 +145,24 @@ async function initDatabase() {
     targetKey: "id",
     as: "size",
   });
-
-  // RefreshTokenUser.sync();
-  // DiscountModel.sync();
+  Role.hasMany(RolePermission, {
+    foreignKey: "roleId",
+    sourceKey: "id",
+    as: "permissions",
+  });
+  Permission.hasMany(RolePermission, {
+    foreignKey: "permissionId",
+    sourceKey: "id",
+    as: "roles",
+  });
+  RolePermission.belongsTo(Role, {
+    foreignKey: "roleId",
+    targetKey: "id",
+  });
+  RolePermission.hasMany(Permission, {
+    foreignKey: "permissionId",
+    targetKey: "id",
+  });
 
   // await sequelize.sync({ alter: true });
 }

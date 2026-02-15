@@ -4,6 +4,7 @@ const { authRouter } = require("../module/auth/auth.routes");
 const { BasketRouter } = require("../module/basket/basket.routes");
 const { PaymentRouter } = require("../module/payment/payment.routes");
 const { OrderRoutes } = require("../module/odrer/order.routes");
+const { RabcRouter } = require("../module/RBAC/rabc.routes");
 
 const mainRouter = Router();
 
@@ -12,6 +13,7 @@ mainRouter.use("/auth", authRouter);
 mainRouter.use("/basket", BasketRouter);
 mainRouter.use("/", PaymentRouter);
 mainRouter.use("/order", OrderRoutes);
+mainRouter.use("/rabc", RabcRouter);
 
 module.exports = {
   mainRouter,
